@@ -1,0 +1,215 @@
+{
+  "info": {
+    "name": "DataPulse AI API",
+    "description": "API regression test collection for DataPulse AI platform",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {"key": "base_url", "value": "http://localhost:8000"},
+    {"key": "api_key", "value": "datapulse-dev-key-2024"}
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/health"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200', function() { pm.response.to.have.status(200); });",
+              "pm.test('Response has status field', function() { pm.expect(pm.response.json().status).to.exist; });",
+              "pm.test('Database is connected', function() { pm.expect(pm.response.json().database).to.eql('connected'); });",
+              "pm.test('Has correlation ID header', function() { pm.response.to.have.header('X-Correlation-ID'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Unauthorized - No Key",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/pipeline-runs"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Returns 401 without API key', function() { pm.response.to.have.status(401); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Pipeline Runs",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/pipeline-runs?page=1&page_size=10",
+        "header": [{"key": "X-API-Key", "value": "{{api_key}}"}]
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200', function() { pm.response.to.have.status(200); });",
+              "pm.test('Has pagination fields', function() {",
+              "  var json = pm.response.json();",
+              "  pm.expect(json.data).to.be.an('array');",
+              "  pm.expect(json.page).to.eql(1);",
+              "  pm.expect(json.total_count).to.be.a('number');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Data Quality Results",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/data-quality-results?page=1&page_size=10",
+        "header": [{"key": "X-API-Key", "value": "{{api_key}}"}]
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200', function() { pm.response.to.have.status(200); });",
+              "pm.test('Returns DQ data array', function() { pm.expect(pm.response.json().data).to.be.an('array'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Orders Summary",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/orders/summary",
+        "header": [{"key": "X-API-Key", "value": "{{api_key}}"}]
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200', function() { pm.response.to.have.status(200); });",
+              "pm.test('Has summary and breakdowns', function() {",
+              "  var json = pm.response.json();",
+              "  pm.expect(json.summary).to.exist;",
+              "  pm.expect(json.by_channel).to.be.an('array');",
+              "  pm.expect(json.by_region).to.be.an('array');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Inventory Anomalies",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/inventory/anomalies",
+        "header": [{"key": "X-API-Key", "value": "{{api_key}}"}]
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200', function() { pm.response.to.have.status(200); });",
+              "pm.test('Has anomaly types', function() { pm.expect(pm.response.json().types).to.exist; });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Execution Misses",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/reports/execution-misses",
+        "header": [{"key": "X-API-Key", "value": "{{api_key}}"}]
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200', function() { pm.response.to.have.status(200); });",
+              "pm.test('Has miss counts', function() {",
+              "  var json = pm.response.json();",
+              "  pm.expect(json.total_misses).to.be.a('number');",
+              "  pm.expect(json.failed_runs).to.be.a('number');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Quarantine Records",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/quarantine/records",
+        "header": [{"key": "X-API-Key", "value": "{{api_key}}"}]
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200', function() { pm.response.to.have.status(200); });",
+              "pm.test('Returns paginated data', function() { pm.expect(pm.response.json().data).to.be.an('array'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "GenAI Latest Analysis",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/genai/latest-analysis",
+        "header": [{"key": "X-API-Key", "value": "{{api_key}}"}]
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200', function() { pm.response.to.have.status(200); });",
+              "pm.test('Has analysis field', function() { pm.expect(pm.response.json().analysis).to.exist; });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "OpenAPI Spec",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/openapi.json"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200', function() { pm.response.to.have.status(200); });",
+              "pm.test('Title is DataPulse AI', function() { pm.expect(pm.response.json().info.title).to.eql('DataPulse AI'); });"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
