@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: datapulse-ai-api
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn src.api.app_with_genai:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.10.12"
+      - key: API_KEY
+        value: datapulse-dev-key-2024

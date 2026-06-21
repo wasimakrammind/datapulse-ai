@@ -5,6 +5,8 @@ import pandas as pd
 import plotly.express as px
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
+from src.etl.init_if_needed import ensure_data_ready
+ensure_data_ready()
 from src.etl.database import get_cursor
 
 st.set_page_config(page_title="DataPulse AI Dashboard", layout="wide")

@@ -5,6 +5,12 @@ A production-style data platform that ingests messy operational data, runs it th
 Built to mirror real-world data engineering workflows at companies like Amazon, Microsoft, Google, and NVIDIA.
 
 
+## Live Demo
+
+* **Dashboard**: [https://datapulse-ai.streamlit.app](https://datapulse-ai.streamlit.app)
+* **API Docs (Swagger)**: [https://datapulse-ai-api.onrender.com/docs](https://datapulse-ai-api.onrender.com/docs)
+
+
 ## What This Project Does
 
 * Generates realistic dirty datasets (orders, customers, payments, inventory, clickstream, subscriptions, API logs) with intentional nulls, duplicates, negative values, and orphan records
